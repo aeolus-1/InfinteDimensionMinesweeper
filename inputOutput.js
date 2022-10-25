@@ -72,10 +72,46 @@ class Input {
         if (e.button == 0) {
 
             if (!gridOb[this.id].uncovered) {
+                if (firstClick) {
+                    firstClick = false
+
+                    if (gridOb[this.id].mine) {
+
+                    } 
+                        
+                    while((()=>{
+                        var neighbours = [...getNeighbours(parseIdPos(this.id), dim), parseIdPos(this.id)],
+                        mineNum = 0
+                        
+                    
+                        neighbours.forEach(tile => {
+                            if (gridOb[`${tile.x}-${tile.y}-${tile.z}-${tile.w}`].mine) {mineNum += 1}
+                        });
+                        return mineNum > 0
+
+                        
+                    })()) {
+                        var neighbours = [...getNeighbours(parseIdPos(this.id), dim), parseIdPos(this.id)],
+                            mineNei = []
+                        neighbours.forEach(tile => {
+                            if (gridOb[`${tile.x}-${tile.y}-${tile.z}-${tile.w}`].mine) {mineNei.push(`${tile.x}-${tile.y}-${tile.z}-${tile.w}`)}
+                        });
+                        var emptyTiles = Object.keys(gridOb).filter((a)=>{
+                            return !gridOb[a].mine
+                        })
+                        
+                        mineNei.forEach(nei => {
+                            gridOb[nei].mine = false
+                            gridOb[emptyTiles[randInt(0, emptyTiles.length-1)]].mine = true
+                        });
+
+                    }
+                    
+                    
+                }
 
                 if (gridOb[this.id].flagged) {
                     gridOb[this.id].flagged = false
-                    console.log("yay")
                 } else {
 
                     gridOb[this.id].uncovered = true
@@ -83,20 +119,7 @@ class Input {
                         endGame()
 
                     } else {
-                        var neighbours = getNeighbours(parseIdPos(this.id), dim),
-                        mineNum = 0
-
-                        
-
-                        neighbours.forEach(tile => {
-                            if (gridOb[`${tile.x}-${tile.y}-${tile.z}-${tile.w}`].mine) mineNum += 1
-                        });
-
-                        if (mineNum <= 0) {
-                            neighbours.forEach(tile => {
-                                gridOb[`${tile.x}-${tile.y}-${tile.z}-${tile.w}`].uncovered = true
-                            });
-                        }
+                        testForCompletlyEmptyTiles(this.id)
                     }
                 }
             }
@@ -109,9 +132,33 @@ class Input {
         }
         Output.updateNum()
 
+        testForWin()
+
     }
 }
 
+
+function testForCompletlyEmptyTiles(pos) {
+    var neighbours = getNeighbours(parseIdPos(pos), dim),
+    mineNum = 0
+
+    
+
+    neighbours.forEach(tile => {
+        if (gridOb[`${tile.x}-${tile.y}-${tile.z}-${tile.w}`].mine) {mineNum += 1}
+    });
+
+    if (mineNum <= 0) {
+        neighbours.forEach(tile => {
+            if (!gridOb[`${tile.x}-${tile.y}-${tile.z}-${tile.w}`].uncovered) {
+                gridOb[`${tile.x}-${tile.y}-${tile.z}-${tile.w}`].uncovered = true
+                testForCompletlyEmptyTiles(`${tile.x}-${tile.y}-${tile.z}-${tile.w}`)
+            }
+        });
+    }
+    Output.updateNum()
+
+}
 
 
 
@@ -159,7 +206,7 @@ class Output {
                 } else {
 
                 neighbours.forEach(tile => {
-                    if (gridOb[`${tile.x}-${tile.y}-${tile.z}-${tile.w}`].flagged) mineNum -= 1 
+                    if (gridOb[`${tile.x}-${tile.y}-${tile.z}-${tile.w}`].flagged && removeFlaggedMines) mineNum -= 1 
                     if (gridOb[`${tile.x}-${tile.y}-${tile.z}-${tile.w}`].mine) mineNum += 1
                 });
 

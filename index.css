@@ -1,7 +1,21 @@
 body {
-    display: flex;
-    width: 3000%;
+    width: min-content;
     height: 3000%;
+}
+
+
+
+#overlay {
+    position: fixed;
+    translate: calc(-50% + 50vw) calc(-50% + 50vh);
+    text-align: center;
+    line-height: 75px;
+    font-size: 30px;
+    height: 150px;
+    width: 220px;
+    background: white;
+    border: solid 1px black;
+    z-index: 5;
     
 }
 
@@ -36,7 +50,9 @@ body {
 
 
 }
-.container {
-    display: flex;
-    
+.boardContainer {
+    translate: calc(-50% + 50vw) 0;
+}
+#gameSelector {
+    width:600px;
 }

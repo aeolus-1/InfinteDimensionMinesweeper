@@ -9,19 +9,34 @@
 </head>
 <body>
 
-    <div id="gameSelector">
-        <label for="mineRange">Mines: </label><input value="7" min="0" max="100" type="number" name="mineRange" id="mineRange">
-        <hr>
-        <label for="mineRange">X: </label><input value="4" min="0" max="100" type="number" name="xRange" id="xRange">
-        <label for="mineRange">Y: </label><input value="4" min="0" max="100" type="number" name="yRange" id="yRange">
-        <label for="mineRange">Z: </label><input value="4" min="0" max="100" type="number" name="zRange" id="zRange">
-        <label for="mineRange">W: </label><input value="4" min="0" max="100" type="number" name="wRange" id="wRange">
-        
-
-        <br><button onclick="startButtonClick()">Start</button>
+    
+    <div style="display: none;" id="overlay">
+        You win<br>
+        <button onclick="resetUI()">Restart</button>
     </div>
 
-    <div id="boardContainer">
+    <div id="gameSelector">
+        <h3>4D Minesweeper</h3>
+        <p>A simple browser based recreation of <a target="_blank" href="https://store.steampowered.com/app/787980/4D_Minesweeper/">Julian Schlüntz original game</a></p>
+
+        <label for="mineRange">Mines: </label><input value="7" min="0" max="100" type="number" name="mineRange" id="mineRange">
+        <hr>
+        Dimensions  |   
+        <label for="mineRange">X: </label><input value="4" min="3" max="100" type="number" name="xRange" id="xRange">
+        <label for="mineRange">Y: </label><input value="4" min="3" max="100" type="number" name="yRange" id="yRange">
+        <label for="mineRange">Z: </label><input value="4" min="3" max="100" type="number" name="zRange" id="zRange">
+        <label for="mineRange">W: </label><input value="4" min="3" max="100" type="number" name="wRange" id="wRange">
+        
+<hr>    
+<input type="checkbox" onchange="updateChecks()" checked id="removeFlaggedMinesBox" name="removeFlaggedMinesBox"><label for="removeFlaggedMinesBox"> Remove flagged mines from mine counts</label>        
+<br><br>
+
+
+<button id="startButton" onclick="startButtonClick()">Start</button>
+<button id="endButton" style="display: none;" onclick="endGame(0)">End Game</button><hr>
+    </div>
+
+    <div id="boardContainer" class="boardContainer">
 
     </div>
     
