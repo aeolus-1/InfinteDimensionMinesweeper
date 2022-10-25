@@ -34,7 +34,3 @@ function plantMines(num) {
 
 
 
-createGrid()
-plantMines(5)
-
-Output.updateNum()

@@ -1,9 +1,4 @@
-var dim = [
-    4,
-    4,
-    4,
-    4
-]
+var dim = []
 
 
 var htmls = {
@@ -17,13 +12,13 @@ var htmls = {
 function tileOnClick(e) {
     console.log(this.id)
 }
+var container = document.getElementById("boardContainer")
 
-
-document.body.id = Math.random()
+container.id = Math.random()
 
 function refresh() {
-    document.body.innerHTML = ""
-    var currentParent = document.body
+    container.innerHTML = ""
+    var currentParent = container
     for (let d1 = 0; d1 < dim[0]; d1++) {
         var e = createElementFromHTML(htmls.divD4)
         currentParent.appendChild(e)
@@ -73,7 +68,7 @@ function refresh() {
     }
 }
 
-refresh()
+
 
 
 document.addEventListener('contextmenu', event => event.preventDefault());

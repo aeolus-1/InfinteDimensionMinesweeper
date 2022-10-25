@@ -8,6 +8,22 @@
     <link rel="stylesheet" href="index.css">
 </head>
 <body>
+
+    <div id="gameSelector">
+        <label for="mineRange">Mines: </label><input value="7" min="0" max="100" type="number" name="mineRange" id="mineRange">
+        <hr>
+        <label for="mineRange">X: </label><input value="4" min="0" max="100" type="number" name="xRange" id="xRange">
+        <label for="mineRange">Y: </label><input value="4" min="0" max="100" type="number" name="yRange" id="yRange">
+        <label for="mineRange">Z: </label><input value="4" min="0" max="100" type="number" name="zRange" id="zRange">
+        <label for="mineRange">W: </label><input value="4" min="0" max="100" type="number" name="wRange" id="wRange">
+        
+
+        <br><button onclick="startButtonClick()">Start</button>
+    </div>
+
+    <div id="boardContainer">
+
+    </div>
     
     <script src="inputOutput.js"></script>
     <script src="html.js"></script>

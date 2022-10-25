@@ -1,6 +1,8 @@
 body {
     display: flex;
-
+    width: 3000%;
+    height: 3000%;
+    
 }
 
 .singleTile {
@@ -33,4 +35,8 @@ body {
     display: inline-block;
 
 
+}
+.container {
+    display: flex;
+    
 }
