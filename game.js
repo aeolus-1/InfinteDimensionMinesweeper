@@ -1,8 +1,10 @@
 var firstClick = true,
-    removeFlaggedMines = true
+    removeFlaggedMines = true,
+    enableChainBreaking = true
 
 function updateChecks() {
     removeFlaggedMines = document.getElementById("removeFlaggedMinesBox").checked
+    enableChainBreaking = document.getElementById("enableChainBreakingBox").checked
     Output.updateNum();
 
 }
@@ -46,21 +48,21 @@ function resetUI() {
     document.getElementById("endButton").style.display = "none"
 
     document.getElementById("overlay").style.display = "none";
-    (["mineRange", "xRange", "yRange", "zRange", "wRange"]).forEach(id => {
-        console.log(id)
-        document.getElementById(id).disabled = false
+
+    ([document.getElementById("dimensionsRange"), document.getElementById("mineRange"), ...document.getElementById("dimensionsInput").children]).forEach(id => {
+        id.disabled = false
     });
+    
 
 }
 function startButtonClick() {
+    var dimA = []
+    for (let i = 0; i < parseInt(dimensionsRange.value); i++) {
+        dimA.push(parseInt(document.getElementById(`dim${i}Range`).value))
+    }
     startGame({
         mines:parseInt(mineRange.value),
-       dim:[
-        parseInt(xRange.value),
-        parseInt(yRange.value),
-        parseInt(zRange.value),
-        parseInt(wRange.value),
-           ]
+       dim:dimA,
    })
 }
 
@@ -75,15 +77,25 @@ function startGame(options) {
     dim = options.dim
     mineNum = options.mines
 
-    refresh()
+    refresh();
 
     createGrid()
     plantMines(options.mines)
 
     Output.updateNum();
 
-    (["mineRange", "xRange", "yRange", "zRange", "wRange"]).forEach(id => {
-        console.log(id)
-        document.getElementById(id).disabled = true
+   
+    
+    ([document.getElementById("dimensionsRange"), document.getElementById("mineRange"), ...document.getElementById("dimensionsInput").children]).forEach(id => {
+        id.disabled = true
     });
+}
+
+function dimChange() {
+    var num = 1
+    for (let i = 0; i < parseInt(dimensionsRange.value); i++) {
+        num *= parseInt(document.getElementById(`dim${i}Range`).value)
+    }
+
+    document.getElementById("tileNum").innerText = num
 }

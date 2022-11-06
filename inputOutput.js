@@ -8,57 +8,60 @@ function v4(x, y, z, w) {
 }
 
 function outOfBounds(pos, dim) {
-    if (pos.x < 0 || pos.x >= dim[0]) {
-        return true
+    for (let i = 0; i < pos.length; i++) {
+        if (pos[i] < 0 || pos[i] >= dim[i]) {
+            return true
+        }
     }
-    if (pos.y < 0 || pos.y >= dim[1]) {
-        return true
-    }
-    if (pos.z < 0 || pos.z >= dim[2]) {
-        return true
-    }
-    if (pos.w < 0 || pos.w >= dim[3]) {
-        return true
-    }
+    
+    
     return false
 
 }
+
 function getEleByPos(pos) {
-    return document.getElementById(`${pos.x}-${pos.y}-${pos.z}-${pos.w}`)
+    var s = ''
+    for (let i = 0; i < parseInt(dimensionsRange.value); i++) {
+        s += `${pos[i]}-`
+    }
+    return document.getElementById(s)
 }
 function parseIdPos(e) {
     var splitString = e.split("-")
-    return v4(
-        parseInt(splitString[0]),
-        parseInt(splitString[1]),
-        parseInt(splitString[2]),
-        parseInt(splitString[3]),
-    )
+    splitString.splice(splitString.length-1, 1)
+    for (let i = 0; i < splitString.length; i++) {
+        splitString[i] = parseInt(splitString[i])
+        
+    }
+
+    return splitString
 }
-function getNeighbours(pos, dim) {
+function posToString(pos) {
+    var s = ""
+    for (let i = 0; i < pos.length; i++) {
+        const p = pos[i];
+        s += `${p}-`
+    }
+    return s
+}
+function getNeighbours(posS, dim) {
     var nei = []
-    for (let i4 = -1; i4 < 2; i4+=1) {
-        for (let i3 = -1; i3 < 2; i3+=1) {
-            for (let i2 = -1; i2 < 2; i2+=1) {
-                for (let i1 = -1; i1 < 2; i1+=1) {
-                    if (!(i4==0&&i3==0&&i2==0&&i1==0)) {
-                        var newPos = v4(
-                            pos.x+i4,
-                            pos.y+i3,
-                            pos.z+i2,
-                            pos.w+i1,
-                        )
-                        if (!outOfBounds(newPos, dim)) {
-                            nei.push(newPos)
-                        }
-                    }
-                }
+    function interLoop(inter, pos) {
+        if (inter!=0) {
+            for (let i1 = -1; i1 < 2; i1+=1) {
+                interLoop(inter-1, [i1+posS[inter-1], ...pos])
+            }
+            
+        } else {
+            var newPos = pos
+            if (!outOfBounds(newPos, dim)) {
+                nei.push(newPos)
             }
         }
     }
+    interLoop(parseInt(dimensionsRange.value), [])
     return nei
 }
-
 
 
 
@@ -66,9 +69,16 @@ function getNeighbours(pos, dim) {
 class Input {
     static mouseOver(e) {
         Output.tileHighlights(parseIdPos(this.id))
+        if (mouseDown) {
+            
+            this.onmousedown({
+                button:0
+            })
+        }
     }
-
+    static alreadyDoneTiles = []
     static mouseClick(e) {
+        
         if (e.button == 0) {
 
             if (!gridOb[this.id].uncovered) {
@@ -83,10 +93,11 @@ class Input {
                         var neighbours = [...getNeighbours(parseIdPos(this.id), dim), parseIdPos(this.id)],
                         mineNum = 0
                         
-                    
+                        console.log(neighbours)
                         neighbours.forEach(tile => {
-                            if (gridOb[`${tile.x}-${tile.y}-${tile.z}-${tile.w}`].mine) {mineNum += 1}
+                            if (gridOb[posToString(tile)].mine) {mineNum += 1}
                         });
+                        console.log(mineNum)
                         return mineNum > 0
 
                         
@@ -94,7 +105,7 @@ class Input {
                         var neighbours = [...getNeighbours(parseIdPos(this.id), dim), parseIdPos(this.id)],
                             mineNei = []
                         neighbours.forEach(tile => {
-                            if (gridOb[`${tile.x}-${tile.y}-${tile.z}-${tile.w}`].mine) {mineNei.push(`${tile.x}-${tile.y}-${tile.z}-${tile.w}`)}
+                            if (gridOb[posToString(tile)].mine) {mineNei.push(posToString(tile))}
                         });
                         var emptyTiles = Object.keys(gridOb).filter((a)=>{
                             return !gridOb[a].mine
@@ -118,8 +129,10 @@ class Input {
                     if (gridOb[this.id].mine) {
                         endGame()
 
-                    } else {
+                    } else if (enableChainBreaking) {
+                        Input.alreadyDoneTiles = []
                         testForCompletlyEmptyTiles(this.id)
+                        
                     }
                 }
             }
@@ -130,11 +143,14 @@ class Input {
                 gridOb[this.id].flagged = !gridOb[this.id].flagged
             }
         }
+        
         Output.updateNum()
 
         testForWin()
 
     }
+
+    
 }
 
 
@@ -145,14 +161,17 @@ function testForCompletlyEmptyTiles(pos) {
     
 
     neighbours.forEach(tile => {
-        if (gridOb[`${tile.x}-${tile.y}-${tile.z}-${tile.w}`].mine) {mineNum += 1}
+        if (gridOb[posToString(tile)].mine) {mineNum += 1}
     });
 
     if (mineNum <= 0) {
         neighbours.forEach(tile => {
-            if (!gridOb[`${tile.x}-${tile.y}-${tile.z}-${tile.w}`].uncovered) {
-                gridOb[`${tile.x}-${tile.y}-${tile.z}-${tile.w}`].uncovered = true
-                testForCompletlyEmptyTiles(`${tile.x}-${tile.y}-${tile.z}-${tile.w}`)
+            if (!gridOb[posToString(tile)].uncovered && !Input.alreadyDoneTiles.includes(posToString(tile))) {
+                Input.alreadyDoneTiles.push(posToString(tile))
+                gridOb[posToString(tile)].uncovered = true
+                testForCompletlyEmptyTiles(posToString(tile))
+                
+                
             }
         });
     }
@@ -194,7 +213,8 @@ class Output {
             var tile = ar[i],
                 tilePos = parseIdPos(tile.id)
 
-            var tileOb = gridOb[`${tilePos.x}-${tilePos.y}-${tilePos.z}-${tilePos.w}`]
+                
+            var tileOb = gridOb[posToString(tilePos)]
                 
             tile.textContent = ""
             if (tileOb.uncovered) {
@@ -206,8 +226,8 @@ class Output {
                 } else {
 
                 neighbours.forEach(tile => {
-                    if (gridOb[`${tile.x}-${tile.y}-${tile.z}-${tile.w}`].flagged && removeFlaggedMines) mineNum -= 1 
-                    if (gridOb[`${tile.x}-${tile.y}-${tile.z}-${tile.w}`].mine) mineNum += 1
+                    if (gridOb[posToString(tile)].flagged && removeFlaggedMines) mineNum -= 1 
+                    if (gridOb[posToString(tile)].mine) mineNum += 1
                 });
 
                 if (mineNum != 0) tile.textContent = mineNum
@@ -227,3 +247,6 @@ class Output {
     }
 }
 
+var mouseDown = false 
+document.addEventListener("mousedown",()=>{mouseDown = true})
+document.addEventListener("mouseup",()=>{mouseDown = false})

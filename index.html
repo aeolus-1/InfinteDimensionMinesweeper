@@ -1,49 +1,69 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>4D Minesweeper</title>
-    <script src="common.js"></script>
-    <link rel="stylesheet" href="index.css">
-</head>
-<body>
 
-    
-    <div style="display: none;" id="overlay">
-        You win<br>
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Infinte Dimension Minesweeper</title>
+    <script src="common.js"></script>
+    <link rel="stylesheet" href="index.css" />
+</head>
+
+<body>
+    <div style="display: none" id="overlay">
+        You win<br />
         <button onclick="resetUI()">Restart</button>
     </div>
 
-    <div id="gameSelector">
-        <h3>4D Minesweeper</h3>
-        <p>A simple browser based recreation of <a target="_blank" href="https://store.steampowered.com/app/787980/4D_Minesweeper/">Julian Schlüntz original game</a></p>
+    <div id="gameSelector" onchange="dimChange()">
+        <h3>Infinte Dimension Minesweeper</h3>
+        <p>
+            Inspired by
+            <a target="_blank" href="https://store.steampowered.com/app/787980/4D_Minesweeper/">Julian Schlüntz original
+                game</a>
+        </p>
+        <label for="dimensionsRange">Dimensions: </label><input value="4" min="1" type="number" name="dimensionsRange"
+            id="dimensionsRange" />
+        <hr />
+        <label for="mineRange">Mines: </label><input value="7" min="0" max="100" type="number" name="mineRange"
+            id="mineRange" />
+        <hr />
+        Dimensions:
+        <div id="dimensionsInput">
+            <input value="4" min="3" max="100" type="number" name="xRange" id="xRange" />
+            x
+            <input value="4" min="3" max="100" type="number" name="yRange" id="yRange" />
+            x
+            <input value="4" min="3" max="100" type="number" name="zRange" id="zRange" />
+            x
+            <input value="4" min="3" max="100" type="number" name="wRange" id="wRange" />
+        </div>
+        <span id="tileNum">256</span> Tiles
 
-        <label for="mineRange">Mines: </label><input value="7" min="0" max="100" type="number" name="mineRange" id="mineRange">
-        <hr>
-        Dimensions  |   
-        <label for="mineRange">X: </label><input value="4" min="3" max="100" type="number" name="xRange" id="xRange">
-        <label for="mineRange">Y: </label><input value="4" min="3" max="100" type="number" name="yRange" id="yRange">
-        <label for="mineRange">Z: </label><input value="4" min="3" max="100" type="number" name="zRange" id="zRange">
-        <label for="mineRange">W: </label><input value="4" min="3" max="100" type="number" name="wRange" id="wRange">
-        
-<hr>    
-<input type="checkbox" onchange="updateChecks()" checked id="removeFlaggedMinesBox" name="removeFlaggedMinesBox"><label for="removeFlaggedMinesBox"> Remove flagged mines from mine counts</label>        
-<br><br>
+        <hr />
+        <input type="checkbox" onchange="updateChecks()" checked id="removeFlaggedMinesBox"
+            name="removeFlaggedMinesBox" /><label for="removeFlaggedMinesBox">
+            Remove flagged mines from mine counts</label>
+        <br />
+        <input type="checkbox" onchange="updateChecks()" checked id="enableChainBreakingBox"
+            name="enableChainBreakingBox" /><label for="enableChainBreakingBox">
+            Enable clear tiles chain breaking (Can be incredibly laggy at large
+            scales)</label>
+        <br /><br />
 
-
-<button id="startButton" onclick="startButtonClick()">Start</button>
-<button id="endButton" style="display: none;" onclick="endGame(0)">End Game</button><hr>
+        <button id="startButton" onclick="startButtonClick()">Start</button>
+        <button id="endButton" style="display: none" onclick="endGame(0)">
+            End Game
+        </button>
+        <hr />
     </div>
 
-    <div id="boardContainer" class="boardContainer">
+    <div id="boardContainer" class="boardContainer"></div>
 
-    </div>
-    
     <script src="inputOutput.js"></script>
     <script src="html.js"></script>
     <script src="minesweeper.js"></script>
     <script src="game.js"></script>
-
 </body>
+
 </html>
