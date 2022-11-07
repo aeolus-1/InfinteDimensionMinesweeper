@@ -78,7 +78,6 @@ class Input {
     }
     static alreadyDoneTiles = []
     static mouseClick(e) {
-        
         if (e.button == 0) {
 
             if (!gridOb[this.id].uncovered) {
@@ -93,11 +92,9 @@ class Input {
                         var neighbours = [...getNeighbours(parseIdPos(this.id), dim), parseIdPos(this.id)],
                         mineNum = 0
                         
-                        console.log(neighbours)
                         neighbours.forEach(tile => {
                             if (gridOb[posToString(tile)].mine) {mineNum += 1}
                         });
-                        console.log(mineNum)
                         return mineNum > 0
 
                         
@@ -121,6 +118,8 @@ class Input {
                     
                 }
 
+                
+
                 if (gridOb[this.id].flagged) {
                     gridOb[this.id].flagged = false
                 } else {
@@ -133,6 +132,16 @@ class Input {
                         Input.alreadyDoneTiles = []
                         testForCompletlyEmptyTiles(this.id)
                         
+                    }
+                }
+            } else {
+                var num = getNeighbours(parseIdPos(this.id), dim).filter((a)=>{return gridOb[posToString(a)].mine}).length
+                if (num == 0) {
+                    var n = getNeighbours(parseIdPos(this.id), dim)
+                    for (let i = 0; i < n.length; i++) {
+                        var neibougher = n[i];
+
+                        gridOb[posToString(neibougher)].uncovered = true
                     }
                 }
             }
